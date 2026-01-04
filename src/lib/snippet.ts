@@ -3,7 +3,7 @@ import type { Song, Snippet } from "../types/index.js";
 export function extractSnippet(
   song: Song,
   minWords: number = 30,
-  maxWords: number = 70
+  maxWords: number = 50
 ): Snippet {
   // Clean up lyrics: normalize whitespace, remove extra line breaks
   const cleanedLyrics = song.lyrics

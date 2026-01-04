@@ -1,4 +1,4 @@
-# TypeCMD
+# TypeCMD - Lyrics Typing Game
 
 A command-line typing game using song lyrics.
 
@@ -9,7 +9,7 @@ A command-line typing game using song lyrics.
 | **Typing game** | Type lyrics with real-time feedback (green=correct, red=error) |
 | **Error blocking** | Must fix mistakes with backspace before continuing |
 | **WPM & accuracy** | Live stats during gameplay |
-| **Random snippets** | 30-70 word excerpts, different each play |
+| **Random snippets** | 30-50 word excerpts, different each play |
 | **Online search** | Fetch lyrics from lrclib.net (no API key needed) |
 | **Local storage** | Save up to 20 songs as JSON files |
 | **High scores** | Top scores saved to `~/.typecmd-scores.json` |
