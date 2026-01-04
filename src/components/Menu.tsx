@@ -15,28 +15,23 @@ interface MenuProps {
 export function Menu({songs, selectedIndex, onSelect, onNavigate, onSearch}: MenuProps) {
     const listRef = useRef<ScrollListRef>(null);
     const [scrollOffset, setScrollOffset] = useState(0);
-    const prevSelectedIndex = useRef(selectedIndex);
 
     useEffect(() => {
         const viewportHeight = 5;
-        const prev = prevSelectedIndex.current;
-        const isWrapAround = Math.abs(selectedIndex - prev) > 1;
-
-        if (isWrapAround) {
-            // Wrap-around detected - calculate expected offset directly
-            if (selectedIndex === 0) {
-                setScrollOffset(0);
-            } else if (selectedIndex === songs.length - 1) {
-                setScrollOffset(Math.max(0, songs.length - viewportHeight));
+        // Calculate scroll offset to match ScrollList's 'auto' alignment
+        // Keep selected item in view with minimal scrolling
+        setScrollOffset(prev => {
+            if (selectedIndex < prev) {
+                // Scrolled above viewport - snap to top
+                return selectedIndex;
+            } else if (selectedIndex >= prev + viewportHeight) {
+                // Scrolled below viewport - snap to bottom
+                return selectedIndex - viewportHeight + 1;
             }
-        } else {
-            // Normal navigation - read from ScrollList
-            const offset = listRef.current?.getScrollOffset() ?? 0;
-            setScrollOffset(offset);
-        }
-
-        prevSelectedIndex.current = selectedIndex;
-    }, [selectedIndex, songs.length]);
+            // Item still in viewport - keep current offset
+            return prev;
+        });
+    }, [selectedIndex]);
 
     useInput((input, key) => {
         if (input === "s" || input === "S") {

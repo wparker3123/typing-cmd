@@ -22,7 +22,10 @@ export function ScrollBar({
     // Calculate thumb size and position
     const thumbSize = Math.max(1, Math.round((viewportHeight / contentHeight) * viewportHeight));
     const maxOffset = contentHeight - viewportHeight;
-    const thumbPosition = Math.round((scrollOffset / maxOffset) * (viewportHeight - thumbSize));
+    const maxThumbPos = viewportHeight - thumbSize;
+    const thumbPosition = scrollOffset === 0 ? 0
+        : scrollOffset >= maxOffset ? maxThumbPos
+        : Math.min(Math.round((scrollOffset / maxOffset) * maxThumbPos), maxThumbPos - 1);
 
     // Build the scroll bar characters
     const chars = style === "block"
