@@ -20,4 +20,5 @@ npm-debug.log*
 .env
 .env.local
 ARCHITECTURE.md
+CLAUDE.md
 /lyrics
