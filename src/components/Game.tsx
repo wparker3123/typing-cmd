@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Text, Box, useInput, useApp } from "ink";
-import type { Song, Snippet, GameScreen, HighScore } from "../types/index.js";
+import type { Song, Snippet, GameScreen, HighScore } from "../types";
 import { loadAllSongs } from "../lib/lyrics.js";
 import { extractSnippet } from "../lib/snippet.js";
 import { computeStats, type TypingStats } from "../lib/scoring.js";
@@ -17,6 +17,7 @@ export function Game() {
   const [songs, setSongs] = useState<Song[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [snippet, setSnippet] = useState<Snippet | null>(null);
+  const [currentSong, setCurrentSong] = useState<Song | null>(null);
   const [typed, setTyped] = useState("");
   const [startTime, setStartTime] = useState<number | null>(null);
   const [finalStats, setFinalStats] = useState<TypingStats | null>(null);
@@ -26,7 +27,11 @@ export function Game() {
   // Load songs on mount
   useEffect(() => {
     async function load() {
-      const loadedSongs = await loadAllSongs();
+      const loadedSongs = await loadAllSongs().then(songs => {
+          return songs.sort((a, b) => {
+              return a.title?.toLowerCase().localeCompare(b.title?.toLowerCase()); // alphabetical order
+          });
+      })
       setSongs(loadedSongs);
       const scores = await getHighScores(5);
       setHighScores(scores);
@@ -91,11 +96,8 @@ export function Game() {
 
       if (input === "r" || input === "R") {
         // Play again with same song
-        if (snippet) {
-          const song = songs.find((s) => s.title === snippet.sourceTitle);
-          if (song) {
-            startGame(song);
-          }
+        if (currentSong) {
+          startGame(currentSong);
         }
       } else if (input === "m" || input === "M" || key.escape) {
         // Return to menu
@@ -131,6 +133,7 @@ export function Game() {
   function startGame(song: Song) {
     const newSnippet = extractSnippet(song);
     setSnippet(newSnippet);
+    setCurrentSong(song);
     setTyped("");
     setStartTime(null);
     setFinalStats(null);
